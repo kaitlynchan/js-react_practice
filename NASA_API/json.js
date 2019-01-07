@@ -1,14 +1,24 @@
 
 document.getElementsByTagName('button')[0].addEventListener('click', function(r){
+  document.getElementById('loader').style = 'display: block';
   getUser(document.getElementsByTagName('input')[0].value);
 })
 
+function handleRequest(r){
+  if (!r.ok){
+    throw Error(r.statusText);
+  }
+  return r.json();
+}
+
 function getUser(name){
   fetch('https://images-api.nasa.gov/search?keywords=' + name)
-  .then(function(r){
-    return r.json();    //converts response object to json
+  .then(handleRequest)
+  .then(response => {
+    return response
   })
-   .then(function(j){
+  .catch(error => console.log(error))
+   .then(j => {
      reset();
      if ((j.collection.items).length != 0){
        var limit_ten = [];
@@ -42,9 +52,9 @@ function assignValues(ten_results){
       var title = f.data[0].title;
       var date_created = f.data[0].date_created;
       var description = f.data[0].description;
-      li.innerHTML =  '<h3>'+title+'</h3>'
-      + '<img src = "' + image + '" />'
-      + '<p><strong>' + date_created +'</strong><br>' + description + '</p>';
+      li.innerHTML =  `<h3> ${title} </h3>
+      <img src = ${image} />
+      <p><strong>${date_created}</strong><br>${description}</p>`;
       document.getElementById('list').appendChild(li);
     }
    })
