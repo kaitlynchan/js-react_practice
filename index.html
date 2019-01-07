@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JSON GitHub Activity</title>
+  <title>NASA API</title>
+  <link rel="stylesheet" href="styling.css">
+  <link href="https://fonts.googleapis.com/css?family=Averia+Libre:300|Open+Sans" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <h1>JSON Activity</h1>
+    <h1>NASA API Search Thingy</h1>
+    <input type = 'text' placeholder="enter keyword">
+    <button>Launch!</button>
     <h3 id = 'loader'>Loading...</h3>
-    <div id="username"></div>
-    <div id="avatar" src = ""></div>
-    <div id="realname"></div>
-    <div id="location"></div>
-    <div id="bio"></div>
-    <div>
-      <div id="numfollowers"></div>
-      <ul id = 'list'>
-      </ul>
-    </div>
-    <input type = 'text' placeholder="gihub username">
-    <button>Get Github Profile</button>
+  </div>
+  <div class="container">
+    <ul id = 'list'>
+    </ul>
   </div>
   <script src="json.js"></script>
 </body>

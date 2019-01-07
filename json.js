@@ -1,51 +1,57 @@
-var response = null;
-var followers = null;
 
 document.getElementsByTagName('button')[0].addEventListener('click', function(r){
   getUser(document.getElementsByTagName('input')[0].value);
 })
 
 function getUser(name){
-  fetch('https://api.github.com/users/' + name)
+  fetch('https://images-api.nasa.gov/search?keywords=' + name)
   .then(function(r){
-    //converts response object to json
-    return r.json();
+    return r.json();    //converts response object to json
   })
-  .then(function(j){
-    response = j;
-    assignValues();
-    getFollowers(j.followers_url);
-  })
-}
-
-function assignValues(){
-  document.getElementById('loader').style = 'display: none'
-  document.getElementById('username').innerText = response.login;
-  document.getElementById('avatar').src = response.avatar_url;
-  document.getElementById('realname').innerText = response.name;
-  document.getElementById('location').innerText = response.location;
-  document.getElementById('bio').innerText = response.bio;
-  document.getElementById('numfollowers').innerText = 'Followers' + response.followers;
-}
-
-function getFollowers(url){
-  fetch(url)
-    .then(function(r){
-      return r.json();
-    })
-    .then(function(f){
-      followers = f;
-      listFollowers(followers);
-    })
-}
-
-function listFollowers(followers){
-  followers.forEach(function(f){
-    var li = document.createElement('li');
-    li.innerHTML = '<a href="' + f.html_url + '"/>'
-      + '<img src = "' + f.avatar_url + '" alt = "' + f.login + '"/>'
-      + '</a>';
-    document.getElementById('list').appendChild(li);
-
+   .then(function(j){
+     reset();
+     if ((j.collection.items).length != 0){
+       var limit_ten = [];
+       for (i=0;i<10;i++){
+         limit_ten.push(j.collection.items[i]);
+       }
+       assignValues(limit_ten);
+     }
+     else{
+       errorHandle();
+     }
   })
 }
+
+function reset() {
+  document.getElementById('loader').style = 'display: none';
+  document.getElementById('list').innerHTML = '';
+}
+
+function assignValues(ten_results){
+  console.log(ten_results);
+  ten_results.forEach(function(f){
+    if(f){
+      var li = document.createElement('li');
+      if (f.links){
+        var image = f.links[0].href;
+      }
+      else{
+        var image = f.href;  //janky error handleing
+      }
+      var title = f.data[0].title;
+      var date_created = f.data[0].date_created;
+      var description = f.data[0].description;
+      li.innerHTML =  '<h3>'+title+'</h3>'
+      + '<img src = "' + image + '" />'
+      + '<p><strong>' + date_created +'</strong><br>' + description + '</p>';
+      document.getElementById('list').appendChild(li);
+    }
+   })
+ }
+
+ function errorHandle(){
+   var li = document.createElement('li');
+   li.innerHTML =  '<h3>oops...try again!</h3>';
+   document.getElementById('list').appendChild(li);
+ }
